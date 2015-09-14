@@ -1,0 +1,131 @@
+<?php
+  //error_reporting(E_ALL);
+  define("TITLE", "Book a Transport Page");
+  define("BCODE", "bcode");
+  define("BDESC", "bdesc");
+  define("BDATE", "bdate");
+  define("BNP", "bnp");
+  define("BDEST", "bdest");
+
+  define("F_TITLE", 0);
+  define("F_TYPE", 1);
+  define("F_NAME", 2);
+  define("F_VALUE", 3);
+  define("F_ERR_MSG", 4);
+  define("F_MAXLENGTH", 5);
+
+
+  class model{
+    var $_code;
+    var $_description;
+    var $_date;
+    var $_type;
+    var $_numPassenger;
+    var $_destination;
+
+    function set_code($code){$this->_code = $code;}
+    function set_description($desc){$this->_description = $desc;}
+    function set_date($date){$this->_date = $date;}
+    function set_type($type){$this->_type = $type;}
+    function set_numPassenger($np){$this->_numPassenger=$np;}
+    function set_destination($dest){$this->_destination=$dest;}
+
+    function get_code(){return $this->_code;}
+    function get_description(){return $this->_description;}
+    function get_date(){return $this->_date;}
+    function get_type(){return $this->_type;}
+    function get_numPassenger(){return $this->_numPassenger;}
+    function get_destination(){return $this->_destination;}
+}
+
+class view{
+  var $model;
+
+  function set_model($m){$this->model = $m;}
+  function echo_html($tag, $text, $info=""){
+      return "<$tag $info>$text</$tag>";
+  }
+  function link($url, $text){
+    return $this->echo_html("a", $text, "href=\"".$url."\"");
+  }
+  function input($title, $name, $value, $type){
+    return $this->echo_html("p", "$title <input type = \"$type\" name=\"$name\">");
+  }
+  function get_form_element($title, $name, $value="", $error_message="", $type="text"){
+    switch ($type) {
+
+      case 'date':
+        # code...
+        break;
+
+      case 'radio':
+        # code...
+        break;
+
+      case 'text':
+        # code...
+        break;
+
+      default:
+        # code...
+        break;
+    }
+  }
+  function radio($text, $values){
+    $out = $this->echo_html("h3", $text);
+    foreach ($values as $key) {
+      $out .= "<input type=\"radio\" name=\"$key[0]\" value=\"$key[1]\"> $key[1]  ";
+    }
+    return $out;
+  }
+  function submit_button(){
+    return $this->echo_html("p", "<input type = \"submit\" name = \"submit\" value=\"Submit\">");
+  }
+  function load_view(){
+
+
+    $head = $this->echo_html("title", TITLE);
+
+    $form = $this->echo_html("h2", TITLE);
+    $form .= $this->input("Booking Code :", "", "BCODE", "text");
+    $form .= $this->input("Booking Description :", "", "BDESC", "text" );
+    $form .= $this->input("Booking Date :", "", "BDATE", "date");
+
+    $radio_values = array(
+      array("BNP", "10"),
+      array("BNP", "30"),
+      array("BNP", "75")
+    );
+
+    $form .= $this->radio("No of Passangers :", $radio_values);
+    $form .= $this->input("Destination :", "", "BDEST", "text");
+
+    $form .= $this->submit_button();
+
+    $info = "method=\"post\" action=\"bookATransport.php\"";
+    $html = $this->echo_html("form", $form, $info);
+
+
+    $html .= $this->link("home.php", "Home");
+    echo $html;
+  }
+}
+
+class controller{
+  function setup(){
+    $booking_view = new view;
+    $booking_view->load_view();
+  }
+
+  function validate_form($data){
+
+  }
+}
+
+if(isset($_POST['submit'])){
+  $booking_controller = new controller;
+  $booking_controller->validate_form();
+}else{
+  $booking_controller = new controller;
+  $booking_controller->setup();
+}
